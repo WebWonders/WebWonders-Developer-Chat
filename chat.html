@@ -11,7 +11,7 @@
     <input type='text' id='name' placeholder='Your Name'>
     <input type='text' id='messageInput' placeholder='Message'>
     <script>
-      var dataRef = new Firebase('https://webwonders-chat.firebaseio.com/#-JFiP9p0qbzGGIBnaI19|4f5230bace9a4c8f60edb3682fcd2093');
+      var dataRef = new Firebase('https://webwonders-chat.firebaseio.com');
       $('#messageInput').keypress(function (e) {
         if (e.keyCode == 13) {
           var userName = $('#name').val();
