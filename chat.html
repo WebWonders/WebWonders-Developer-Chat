@@ -31,8 +31,12 @@
       };
     </script>
     <script>
-      JSON.stringify(message.name);
-      localStorage.setItem("user_name", message.name);
+      var nameBox = document.getElementById('#name')
+      localStorage.setItem("user_name", JSON.stringify(message.name));
+      var nameStored = localStorage.getItem("user_name")
+      if (nameBox.val() === "before") {
+        message.name = nameStored;
+      }
     </script>
   </body>
 </html>
