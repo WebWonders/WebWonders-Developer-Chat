@@ -30,5 +30,9 @@
         $('#messages')[0].scrollTop = $('#messages')[0].scrollHeight;
       };
     </script>
+    <script>
+      JSON.stringify(message.name);
+      localStorage.setItem("user_name", message.name);
+    </script>
   </body>
 </html>
