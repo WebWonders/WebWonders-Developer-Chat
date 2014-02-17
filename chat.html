@@ -11,6 +11,9 @@
     <div id='messages'></div>
     <input type='text' id='name' placeholder='Your Name'>
     <input type='text' id='messageInput' placeholder='Message'>
+    <label for="onlineCheck">Online?</label>
+    <input type="checkbox" name="onlineCheck" id="onlineCheckBox">
+    <div id="online"></div>
     <script>
       var dataRef = new Firebase('https://webwonders-chat.firebaseio.com');
       $('#messageInput').keypress(function (e) {
@@ -19,6 +22,13 @@
           var userText = $('#messageInput').val();
           dataRef.push({name: userName, text: userText});
           $('#messageInput').val('');
+          //online user code
+          var onlineUser = $('#onlineCheckBox').val();
+          var isOnline = false;
+          if (onlineUser === true) {
+            isOnline = true;
+          }
+          dataRef.push({name: userName, text: isOnline});
         }
       });
       dataRef.on('child_added', function(snapshot) {
