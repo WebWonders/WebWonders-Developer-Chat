@@ -13,7 +13,7 @@
     <input type='text' id='messageInput' placeholder='Message'>
     <label for="onlineCheck">Online?</label>
     <input type="checkbox" name="onlineCheck" id="onlineCheckBox">
-    <div id="online"></div>
+    <!--<div id="online"></div>-->
     <script>
       var dataRef = new Firebase('https://webwonders-chat.firebaseio.com');
       $('#messageInput').keypress(function (e) {
@@ -24,11 +24,15 @@
           $('#messageInput').val('');
           //online user code
           var onlineUser = $('#onlineCheckBox').val();
-          var isOnline = false;
+          var isOnline;
           if (onlineUser === true) {
             isOnline = true;
+            displayChatMessage("ServerMessage", message.name + " Just went online");
           }
-          dataRef.push({name: userName, text: isOnline});
+          if (onlineUser === false) {
+            isOnline = false;
+            displayChatMessage("ServerMessage", message.name + " Just went offline");
+          }
         }
       });
       dataRef.on('child_added', function(snapshot) {
@@ -43,8 +47,8 @@
     <script>
       var nameBox = document.getElementById('#name')
       localStorage.setItem("user_name", JSON.stringify(message.name));
-      var nameStored = localStorage.getItem("user_name")
-      if (nameBox.val() === "before") {
+      var nameStored = localStorage.getItem("user_name");
+      if (nameBox.val() === "") {
         message.name = nameStored;
       }
     </script>
