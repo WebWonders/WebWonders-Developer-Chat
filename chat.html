@@ -9,10 +9,9 @@
   </head>
   <body>
     <div id='messages'></div>
+    <div id='presenceDiv'
     <input type='text' id='name' placeholder='Your Name'>
     <input type='text' id='messageInput' placeholder='Message'>
-    <label for="onlineCheck">Online?</label>
-    <input type="checkbox" name="onlineCheck" id="onlineCheckBox">
     <!--<div id="online"></div>-->
     <script>
       var dataRef = new Firebase('https://webwonders-chat.firebaseio.com');
@@ -22,17 +21,6 @@
           var userText = $('#messageInput').val();
           dataRef.push({name: userName, text: userText});
           $('#messageInput').val('');
-          //online user code
-          var onlineUser = $('#onlineCheckBox').val();
-          var isOnline;
-          if (onlineUser === true) {
-            isOnline = true;
-            displayChatMessage("ServerMessage", message.name + " Just went online");
-          }
-          if (onlineUser === false) {
-            isOnline = false;
-            displayChatMessage("ServerMessage", message.name + " Just went offline");
-          }
         }
       });
       dataRef.on('child_added', function(snapshot) {
@@ -51,6 +39,64 @@
       if (nameBox.val() === "") {
         message.name = nameStored;
       }
+    </script>
+    <script>
+      //online user code
+      
+  var userListRef = new Firebase("https://webwonders-chat.firebaseio.com");
+  var myUserRef = userListRef.push();
+
+  var connectedRef = new Firebase("https://webwonders-chat.firebaseio.com");
+  connectedRef.on("value", function(isOnline) {
+    if (isOnline.val()) {
+      myUserRef.onDisconnect().remove();
+      setUserStatus("★ online");
+    } else {
+      setUserStatus(currentStatus);
+    }
+  });
+
+  function setUserStatus(status) {
+    currentStatus = status;
+    myUserRef.set({ name: name, status: status });
+  }
+
+  function getMessageId(snapshot) {
+    return snapshot.name().replace(/[^a-z0-9\-\_]/gi,'');
+  }
+
+  userListRef.on("child_added", function(snapshot) {
+    var user = snapshot.val();
+    
+    $("<div/>")
+      .attr("id", getMessageId(snapshot))
+      .text(user.name + " is currently " + user.status)
+      .appendTo("#presenceDiv");
+  });
+
+  userListRef.on("child_removed", function(snapshot) {
+    $("#presenceDiv").children("#" + getMessageId(snapshot))
+      .remove();
+  });
+
+  userListRef.on("child_changed", function(snapshot) {
+    var user = snapshot.val();
+    $("#presenceDiv").children("#" + getMessageId(snapshot))
+      .text(user.name + " is currently " + user.status);
+  });
+
+  document.onIdle = function () {
+    setUserStatus("☆ idle");
+  }
+  document.onAway = function () {
+    setUserStatus("☄ away");
+  }
+  document.onBack = function (isIdle, isAway) {
+    setUserStatus("★ online");
+  }
+
+  setIdleTimeout(5000);
+  setAwayTimeout(10000);
     </script>
   </body>
 </html>
